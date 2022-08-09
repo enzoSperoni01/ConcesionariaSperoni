@@ -74,18 +74,21 @@ CREATE TABLE Proveedor_Vendedor(
     oper_update datetime not null
 );
 
+-- Para saber quienes adquirieron un Modelo que sea BMW
 CREATE OR REPLACE VIEW VW_Cliente_Compro_BMW AS 
 (
 	SELECT nombre, apellido, modelo FROM Cliente
     WHERE marca LIKE "%BMW"
 ) ;
 
+-- Quienes realizaron un gasto mayor a $500.000
 CREATE OR REPLACE VIEW VW_Cliente_Gasto_Mayor AS 
 (
 	SELECT nombre, apellido, dinero_gastado FROM Cliente 
     WHERE dinero_gastado > 500000 order by dinero_gastado desc 
 ) ;
 
+-- Para saber que ID_User fue el que realizo un Insert, con que datos, con fecha y hora
 CREATE OR REPLACE VIEW VW_Cliente_Auto_User_Ins AS (
 	SELECT Cliente.nombre, Cliente.apellido, 
     Cliente.modelo, Autos.ID_user_ins, Cliente.oper_insert
