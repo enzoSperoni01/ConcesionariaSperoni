@@ -1,14 +1,8 @@
 CREATE SCHEMA CONCESIONARIA ;
 USE CONCESIONARIA ;
 
-CREATE TABLE Usuarios_UPD (
-	ID_user_upd int Primary Key auto_increment,
-    nombre VARCHAR(30),
-    apellido VARCHAR(30)
-);
-
-CREATE TABLE Usuarios_INS (
-	ID_user_ins int Primary Key auto_increment,
+CREATE TABLE Usuarios (
+	ID_user int Primary Key auto_increment,
     nombre VARCHAR(30),
     apellido VARCHAR(30)
 );
@@ -21,7 +15,7 @@ CREATE TABLE Marca (
 CREATE TABLE Modelo (
 	id_modelo int PRIMARY KEY auto_increment,
     descripcion VARCHAR(50),
-	anio date
+	anio int
 );
 
 CREATE TABLE Autos (
@@ -61,6 +55,9 @@ CREATE TABLE Cliente (
 	id_C int PRIMARY KEY auto_increment,
     nombre VARCHAR(30),
     apellido VARCHAR(30),
+    modelo VARCHAR(30),
+    marca VARCHAR(30),
+    dinero_gastado int,
     ID_user_upd int,
     ID_user_ins int,
     oper_insert datetime not null,
@@ -76,6 +73,25 @@ CREATE TABLE Proveedor_Vendedor(
     oper_insert datetime not null,
     oper_update datetime not null
 );
+
+CREATE OR REPLACE VIEW VW_Cliente_Compro_BMW AS 
+(
+	SELECT nombre, apellido, modelo FROM Cliente
+    WHERE marca LIKE "%BMW"
+) ;
+
+CREATE OR REPLACE VIEW VW_Cliente_Gasto_Mayor AS 
+(
+	SELECT nombre, apellido, dinero_gastado FROM Cliente 
+    WHERE dinero_gastado > 500000 order by dinero_gastado desc 
+) ;
+
+CREATE OR REPLACE VIEW VW_Cliente_Auto_User_Ins AS (
+	SELECT Cliente.nombre, Cliente.apellido, 
+    Cliente.modelo, Autos.ID_user_ins, Cliente.oper_insert
+	FROM Cliente 
+	INNER JOIN Autos ON Autos.Marca=Cliente.Marca
+) ;
 
 ALTER TABLE Proveedor
 ADD foreign key (id_A)	
