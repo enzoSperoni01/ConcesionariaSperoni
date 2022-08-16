@@ -96,6 +96,43 @@ CREATE OR REPLACE VIEW VW_Cliente_Auto_User_Ins AS (
 	INNER JOIN Autos ON Autos.Marca=Cliente.Marca
 ) ;
 
+
+-- Datos del cliente (Nombre y Apellido - Marca y Modelo)
+delimiter //
+create function fn_datos_cliente ( p_id_cliente int )
+returns varchar(250)
+deterministic
+begin
+	declare modelo_auto_cliente varchar(250) ;
+    set modelo_auto_cliente = (
+		SELECT concat(nombre, ' ', apellido, ' - ', marca, ' - ', modelo) 
+		FROM Cliente 
+        WHERE id_C = p_id_cliente
+	) ;
+    return modelo_auto_cliente ;
+end //
+delimiter ;
+
+
+-- Sacar el IVA de la compra del Cliente
+delimiter //
+create function fn_gasto_cliente_IVA ( p_id_cliente int )
+returns varchar(250)
+deterministic
+begin 
+	declare suma_iva varchar(250) ;
+    set suma_iva = (
+		SELECT concat(
+					nombre, ' ', apellido, ' - ', 
+					modelo, ' - ', marca,
+                    ' - IVA: ', (dinero_gastado * 0.21))
+        FROM Cliente
+        WHERE id_C = p_id_cliente
+    ) ;
+    return suma_iva ;
+end //
+delimiter ;
+
 ALTER TABLE Proveedor
 ADD foreign key (id_A)	
 REFERENCES Autos(id_A);
