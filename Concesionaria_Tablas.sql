@@ -133,6 +133,51 @@ begin
 end //
 delimiter ;
 
+-- Ordenar las tablas por el tipo de columna que usuario desee, y si es Ascendente o Descendente
+delimiter //
+create procedure sp_order_tabla ( INOUT p_Order varchar(35), INOUT p_Asc_Desc varchar(35) )
+begin
+	set @var_1 = concat('SELECT * FROM Cliente U ORDER BY ', p_Order, ' ', p_Asc_Desc) ;
+    prepare param_stmt from @var_1 ;
+    execute param_stmt ;
+    deallocate prepare param_stmt ;
+end //
+delimiter ;
+set @p_Order = 'marca';
+set @p_Asc_Desc = 'DESC';
+
+call sp_order_tabla(@p_Order, @p_Asc_Desc);
+
+-- SP: Para insertar datos en la tabla de "Clientes"
+delimiter //
+create procedure sp_insert_cliente ( INOUT p_nombre varchar(50),
+									 INOUT p_apellido varchar(50),
+                                     INOUT p_modelo varchar(50),
+                                     INOUT p_marca varchar(50),
+                                     INOUT p_dinero int,
+                                     INOUT p_oper_insert varchar(50),
+                                     INOUT p_oper_update varchar(50) )
+begin
+	insert into Cliente (
+		nombre, 
+        apellido, 
+        modelo, 
+        marca, 
+        dinero_gastado, 
+        oper_insert, 
+        oper_update) 
+	values(
+		p_nombre, 
+        p_apellido, 
+        p_modelo, 
+        p_marca, 
+        p_dinero, 
+        p_oper_insert, 
+        p_oper_update
+	);
+end //
+delimiter ;
+
 ALTER TABLE Proveedor
 ADD foreign key (id_A)	
 REFERENCES Autos(id_A);
