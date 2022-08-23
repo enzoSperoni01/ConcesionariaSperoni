@@ -178,6 +178,52 @@ begin
 end //
 delimiter ;
 
+
+-- Trigger AFTER = Muestre el ID del nuevo Cliente que se añadio
+CREATE TABLE LOG_AUDIT_CLIENTES
+(
+	ID_log INT AUTO_INCREMENT,
+	nombre_de_accion VARCHAR (10),
+	nombre_tabla VARCHAR (50),
+    nuevo_campo VARCHAR(3200),
+	usuario VARCHAR (100),
+	fecha_upd_ins_del DATE,
+	PRIMARY KEY (ID_log)
+) ;
+
+DROP TRIGGER TRG_AFTER_INS_CLIENTES;
+DELIMITER // 
+CREATE TRIGGER TRG_AFTER_INS_CLIENTES 
+AFTER INSERT ON Cliente FOR EACH ROW 
+BEGIN 
+	INSERT INTO LOG_AUDIT_CLIENTES (nombre_de_accion, nombre_tabla, nuevo_campo, usuario, fecha_upd_ins_del)
+	VALUES ('INSERT','CLIENTE', NEW.id_C, CURRENT_USER(), NOW());
+END //
+
+-- Auditoria en BEFORE para Clientes = Nombres
+CREATE TABLE LOG_AUDIT_UPD_CLIENTE
+(
+	ID_log INT AUTO_INCREMENT,
+	nombre_de_accion VARCHAR (10),
+	nombre_tabla VARCHAR (50),
+	campo_anterior VARCHAR (3200),
+	campo_nuevo VARCHAR (3200),
+	usuario VARCHAR (100),
+	fecha_upd_ins_del DATE,
+	PRIMARY KEY (ID_log)
+) ;
+
+DROP TRIGGER TRG_BEFORE_UPD_CLIENTES;
+DELIMITER // 
+CREATE TRIGGER TRG_BEFORE_UPD_CLIENTES
+BEFORE UPDATE ON Cliente FOR EACH ROW 
+BEGIN
+	INSERT INTO LOG_AUDIT_UPD_CLIENTE (nombre_de_accion, nombre_tabla, campo_anterior, campo_nuevo, usuario, fecha_upd_ins_del)
+	VALUES ('UPDATE','CLIENTE', OLD.nombre, NEW.nombre, CURRENT_USER(),NOW());
+END //
+
+UPDATE Cliente SET nombre = 'Pablo' WHERE id_C = 2;
+
 ALTER TABLE Proveedor
 ADD foreign key (id_A)	
 REFERENCES Autos(id_A);
