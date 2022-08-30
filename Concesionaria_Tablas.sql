@@ -224,6 +224,21 @@ END //
 
 UPDATE Cliente SET nombre = 'Pablo' WHERE id_C = 2;
 
+-- Desafio de Clase 19
+USE mysql;
+CREATE USER 'reader@localhost'; -- Usuario de solo lecturas
+CREATE USER 'total_user@localhost'; -- Usuario de Lectura, Insercion y Modificacion de datos
+
+-- El usuario 'reader@localhost' podra solo hacer consultas de SELECT en la tabla Cliente
+GRANT SELECT ON concesionaria.cliente TO 'reader@localhost';
+
+-- El usuario 'total_user@localhost' podra hacer consultas SELECT, realizar INSERT y UPDATE de datos
+GRANT SELECT, INSERT, UPDATE ON concesionaria.cliente TO 'total_user@localhost';
+
+use mysql;
+-- Revisar los permisos del usuario en cuestion
+show grants for 'total_user@localhost';
+
 ALTER TABLE Proveedor
 ADD foreign key (id_A)	
 REFERENCES Autos(id_A);
