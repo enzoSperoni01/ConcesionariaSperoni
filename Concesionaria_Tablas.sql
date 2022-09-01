@@ -224,7 +224,6 @@ END //
 
 UPDATE Cliente SET nombre = 'Pablo' WHERE id_C = 2;
 
--- Desafio de Clase 19
 USE mysql;
 CREATE USER 'reader@localhost'; -- Usuario de solo lecturas
 CREATE USER 'total_user@localhost'; -- Usuario de Lectura, Insercion y Modificacion de datos
@@ -238,6 +237,32 @@ GRANT SELECT, INSERT, UPDATE ON concesionaria.cliente TO 'total_user@localhost';
 use mysql;
 -- Revisar los permisos del usuario en cuestion
 show grants for 'total_user@localhost';
+
+
+-- Desafio de Clase 20
+SELECT @@autocommit ;
+SET AUTOCOMMIT = 1;
+SET AUTOCOMMIT = 0;
+
+start transaction;
+delete from cliente where id_C = 37;
+delete from cliente where id_C = 14;
+rollback;
+commit;
+
+start transaction;
+insert into Marca(descripcion) values('Alpha Romeo');
+insert into Marca(descripcion) values('Audi');
+insert into Marca(descripcion) values('Jeep');
+insert into Marca(descripcion) values('Kia');
+savepoint group_brand1;
+insert into Marca(descripcion) values('Lexus');
+insert into Marca(descripcion) values('Mazda');
+insert into Marca(descripcion) values('Peugeot');
+insert into Marca(descripcion) values('Seat');
+savepoint group_brand2;
+
+-- release savepoint group_brand1;
 
 ALTER TABLE Proveedor
 ADD foreign key (id_A)	
